@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+/* ── IMPORT (once you download the fonts, replace with local @font-face) ──  */
+/* ── LOCAL FONTS ── */
+@font-face {
+  font-family: 'Satoshi';
+  src: url("/public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff") format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url("/public/fonts/DMSans-VariableFont_opsz\,wght.ttf") format("ttf");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* ── COLORS ── */
+  --color-bg: #FFFFFF;
+  --color-dark: #0A0A0A;
+  --color-dark-sec: #111111;
+  --color-dark-ter: #1A1A1A;
+  --color-mid: #555555;
+  --color-light: #888888;
+  --color-surface: #F2F2F2;
+  --color-card: #FAFAFA;
+  --color-note: #F7F6F1;
+  --color-border: #E0E0E0;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-shadow-md: rgba(0, 0, 0, 0.14);
+  --color-shadow-lg: rgba(0, 0, 0, 0.22);
+
+  /* ── FONT FAMILIES ── */
+  --font-heading: "Satoshi", "DM Sans", sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+
+  /* ── TYPOGRAPHY SCALE ── */
+  --text-h1: clamp(48px, 7vw, 72px);
+  --text-h2: clamp(32px, 4.5vw, 48px);
+  --text-h3: clamp(22px, 3vw, 28px);
+  --text-h4: 20px;
+  --text-lg: 18px;
+  --text-md: 16px;
+  --text-sm: 14px;
+  --text-xs: 12px;
+  --text-nav: 14px;
+  --text-btn: 15px;
+  --text-label: 11px;
+  --text-pill: 12px;
+
+  /* ── SPACING ── */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 48px;
+  --spacing-xl: 80px;
+  --spacing-2xl: 120px;
+
+  /* ── RADIUS ── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 100px;
+
+  /* ── TRANSITIONS ── */
+  --duration-fast: 0.25s;
+  --duration-slow: 0.4s;
+  --ease: var(--duration-fast) ease;
+  --ease-slow: var(--duration-slow) ease;
+
+  /* ── SHADOWS ── */
+  --shadow-sm: 0 2px 8px var(--color-shadow);
+  --shadow-md: 0 4px 16px var(--color-shadow-md);
+  --shadow-lg: 0 8px 32px var(--color-shadow-lg);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-dark);
+  overflow-x: hidden;
+}
+
+.section-anchor {
+  scroll-margin-top: 7rem;
+}
+
+/* ── RESETS ── */
+
+/*Header*/
+.nav_link {
+  font-family: var(--font-body);
+  @apply text-[0.9rem] text-dark/80 font-[300] transition-all duration-200 hover:text-dark hover:scale-105
+}
+
+.btn1 {
+  @apply bg-dark text-white font-body px-5 py-2 rounded-full
+}
+
+.about_image {
+  background: url("/images/about_us_image.jpg") center/cover;
+}
+
+.about_us_box::after {
+content: "";
+box-shadow: 10px 10px #F2F2F2;
+@apply h-[25px] w-[25px] bg-transparent absolute bottom-0 -left-[50px] rounded-full 
+}
+
+.about_us_box::before {
+content: "";
+box-shadow: 15px 15px #F2F2F2;
+
+@apply h-[25px] w-[25px] bg-transparent absolute -top-[49.5px] right-[-0.5px] rounded-full
+}
+
+.hidex::-webkit-scrollbar {
+  background: black;
+}
+
+.hidex::-webkit-scrollbar-thumb {
+  background: black;
+}
