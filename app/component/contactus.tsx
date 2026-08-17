@@ -1,7 +1,7 @@
 "use client"
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import emailjs from '@emailjs/browser';
+import { submitContact } from "../lib/api";
 
 // Animation variants
 const containerVariants = {
@@ -199,23 +199,26 @@ export default function ContactUs() {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
-    try {
-     const result = await emailjs.sendForm(
-  process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-  process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-  formRef.current!,
-  process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-);
+    const form = formRef.current;
+    if (!form) return;
 
-      if (result.text === 'OK') {
-        setSubmitStatus({
-          type: 'success',
-          message: 'Message sent successfully! We\'ll get back to you soon.'
-        });
-        formRef.current?.reset();
-      }
+    const data = new FormData(form);
+
+    try {
+      await submitContact({
+        name: String(data.get('user_name') || '').trim(),
+        email: String(data.get('user_email') || '').trim(),
+        subject: String(data.get('subject') || '').trim(),
+        message: String(data.get('message') || '').trim(),
+      });
+
+      setSubmitStatus({
+        type: 'success',
+        message: 'Message sent successfully! We\'ll get back to you soon.'
+      });
+      form.reset();
     } catch (error) {
-      console.error('EmailJS Error:', error);
+      console.error('Contact submission error:', error);
       setSubmitStatus({
         type: 'error',
         message: 'Failed to send message. Please try again or email us directly at seanimayi@gmail.com'

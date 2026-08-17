@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode (used by the /dashboard route).
+   Only activates under a `.dark` ancestor, so the main site is unaffected. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ── IMPORT (once you download the fonts, replace with local @font-face) ──  */
 /* ── LOCAL FONTS ── */
 @font-face {
