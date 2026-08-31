@@ -131,7 +131,7 @@ export default function AboutUs() {
   return (
     <motion.div 
       id="aboutus" 
-      className="section-anchor px-[3rem] py-[3rem] bg-surface flex justify-center items-center flex-col"
+      className="section-anchor lg:px-[3rem] px-[1.5rem] py-[3rem] bg-surface flex justify-center items-center flex-col"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.1 }}
@@ -154,14 +154,14 @@ export default function AboutUs() {
           </motion.span>
           
           <motion.h2 
-            className="font-heading font-semibold text-[3rem]"
+            className="font-heading font-semibold lg:text-[3rem] text-[2.5rem]"
             variants={headingVariants}
           >
             We're not just developers. We're your technology partners.
           </motion.h2>
           
           <motion.p 
-            className="text-dark/50 w-[55%]"
+            className="text-dark/50 lg:w-[55%] w-[85%]"
             variants={paragraphVariants}
           >
             Most agencies build what you ask for. We build what your business
@@ -210,7 +210,7 @@ export default function AboutUs() {
 
         {/* Chips */}
         <motion.div 
-          className="mt-[5.5rem] flex flex-wrap w-[400px] gap-2"
+          className="lg:mt-[5.5rem] mt-[2rem] flex flex-wrap lg:w-[400px] gap-2"
           variants={chipContainerVariants}
         >
           {chips.map((chip, index) => (

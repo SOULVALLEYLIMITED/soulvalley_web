@@ -177,7 +177,7 @@ export default function Features() {
       viewport={{ once: false, amount: 0.1 }}
       variants={containerVariants}
     >
-      <div className="px-6">
+      <div className="lg:px-[3rem] px-[1.5rem]">
         {/* Header */}
         <motion.div variants={headerVariants}>
           <motion.span 
@@ -188,7 +188,7 @@ export default function Features() {
           </motion.span>
 
           <motion.h2 
-            className="mt-6 text-5xl font-bold leading-tight text-gray-900"
+            className="mt-6 lg:text-[3rem] text-[2.5rem] font-bold leading-tight text-gray-900"
             variants={headingVariants}
           >
             Pioneering Tech
@@ -197,7 +197,7 @@ export default function Features() {
           </motion.h2>
 
           <motion.p 
-            className="mt-5 text-lg text-gray-500 w-[50%]"
+            className="mt-5 text-lg text-gray-500 lg:w-[55%] w-[85%]"
             variants={paragraphVariants}
           >
             <strong>Soulvalley</strong> is leading the future of technology,

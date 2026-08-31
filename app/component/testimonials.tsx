@@ -231,7 +231,7 @@ export default function Testimonials() {
   return (
     <motion.section 
       id="testimonials" 
-      className="section-anchor bg-[var(--surface)] py-20 px-[3rem]"
+      className="section-anchor bg-[var(--surface)] py-20 lg:px-[3rem] px-[1.5rem]"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.1 }}
@@ -254,7 +254,7 @@ export default function Testimonials() {
           </div>
 
           <motion.h2
-            className="text-5xl font-bold text-[var(--dark)] leading-tight"
+            className="lg:text-[4rem] text-[2.5rem] font-bold text-[var(--dark)] leading-tight"
             style={{ fontFamily: "var(--font-heading)" }}
             variants={headingVariants}
           >
@@ -264,7 +264,7 @@ export default function Testimonials() {
           </motion.h2>
 
           <motion.p
-            className="mt-5 text-[var(--mid)] text-base leading-relaxed w-[50%]"
+            className="mt-5 text-[var(--mid)] text-base leading-relaxed lg:w-[55%] w-[85%]"
             style={{ fontFamily: "var(--font-body)" }}
             variants={paragraphVariants}
           >
@@ -285,7 +285,7 @@ export default function Testimonials() {
               <motion.button
                 key={t.id}
                 onClick={() => setActiveId(t.id)}
-                className={`relative lg:h-[160px] lg:w-[160px] w-[80px] h-[80px] overflow-hidden rounded-2xl transition-all duration-300 focus:outline-none flex-shrink-0
+                className={`relative lg:h-[160px] lg:w-[160px] w-[50px] h-[50px] overflow-hidden rounded-2xl transition-all duration-300 focus:outline-none flex-shrink-0
                   ${activeId === t.id
                     ? "ring-[3px] ring-[var(--dark)] scale-[1.04] brightness-100"
                     : "brightness-50 hover:brightness-75 hover:scale-[1.02]"

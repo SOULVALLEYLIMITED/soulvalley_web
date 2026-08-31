@@ -117,14 +117,13 @@ const linkHrefs: { [key: string]: string } = {
   "E-Commerce": "#portfolio",
   "Contact Us": "#contact",
   "Privacy Policy": "/privacy",
-  "Terms of Use": "#",
   FAQ: "#faq",
 };
 
 const links = {
   Company: ["About", "Features", "Portfolio", "Testimonials"],
   Porfolio: ["Web Applications", "Mobile Apps", "AI Integration", "E-Commerce"],
-  Support: ["Contact Us", "Privacy Policy", "Terms of Use", "FAQ"],
+  Support: ["Contact Us", "Privacy Policy", "FAQ"],
 };
 
 export default function Footer() {

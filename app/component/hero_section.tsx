@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { FaArrowRight } from "react-icons/fa";
 import HeaderComponent from "./header_component";
 import Image from "next/image";
@@ -20,9 +20,9 @@ const containerVariants = {
     transition: {
       duration: 0.6,
       staggerChildren: 0.2,
-      ease: "easeOut"
-    }
-  }
+      ease: "easeOut",
+    },
+  },
 } as any;
 
 const leftContentVariants = {
@@ -30,8 +30,8 @@ const leftContentVariants = {
   visible: {
     x: 0,
     opacity: 1,
-    transition: { duration: 0.7, ease: "easeOut" }
-  }
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
 } as any;
 
 const rightContentVariants = {
@@ -39,8 +39,8 @@ const rightContentVariants = {
   visible: {
     x: 0,
     opacity: 1,
-    transition: { duration: 0.7, ease: "easeOut" }
-  }
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
 } as any;
 
 const badgeVariants = {
@@ -48,8 +48,8 @@ const badgeVariants = {
   visible: {
     scale: 1,
     opacity: 1,
-    transition: { duration: 0.5, ease: "easeOut" }
-  }
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
 } as any;
 
 const headingVariants = {
@@ -57,8 +57,8 @@ const headingVariants = {
   visible: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
 } as any;
 
 const paragraphVariants = {
@@ -66,8 +66,8 @@ const paragraphVariants = {
   visible: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.6, delay: 0.2, ease: "easeOut" }
-  }
+    transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+  },
 } as any;
 
 const buttonVariants = {
@@ -75,16 +75,16 @@ const buttonVariants = {
   visible: {
     scale: 1,
     opacity: 1,
-    transition: { duration: 0.5, delay: 0.3, ease: "easeOut" }
+    transition: { duration: 0.5, delay: 0.3, ease: "easeOut" },
   },
   hover: {
     scale: 1.05,
-    transition: { duration: 0.2 }
+    transition: { duration: 0.2 },
   },
   tap: {
     scale: 0.95,
-    transition: { duration: 0.1 }
-  }
+    transition: { duration: 0.1 },
+  },
 } as any;
 
 const imageVariants = {
@@ -93,8 +93,8 @@ const imageVariants = {
     scale: 1,
     opacity: 1,
     rotate: 0,
-    transition: { duration: 0.8, ease: "easeOut" }
-  }
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
 } as any;
 
 const floatingCardVariants = {
@@ -103,16 +103,16 @@ const floatingCardVariants = {
     y: 0,
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.6, delay: 0.4, ease: "easeOut" }
+    transition: { duration: 0.6, delay: 0.4, ease: "easeOut" },
   },
   float: {
     y: [-10, 10, -10],
     transition: {
       duration: 3,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 } as any;
 
 const personVariants = {
@@ -120,8 +120,8 @@ const personVariants = {
   visible: (custom: number) => ({
     scale: 1,
     opacity: 1,
-    transition: { delay: custom * 0.1, duration: 0.4, ease: "easeOut" }
-  })
+    transition: { delay: custom * 0.1, duration: 0.4, ease: "easeOut" },
+  }),
 } as any;
 
 const bottomBadgeVariants = {
@@ -129,53 +129,58 @@ const bottomBadgeVariants = {
   visible: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.6, delay: 0.6, ease: "easeOut" }
-  }
+    transition: { duration: 0.6, delay: 0.6, ease: "easeOut" },
+  },
 } as any;
 
 export default function HeroSection() {
   return (
-    <motion.div 
+    <motion.div
       className="pb-[3rem]"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.1 }}
       variants={containerVariants}
     >
-      <div className="px-[3rem] flex justify-between items-center lg:flex-row flex-col mt-[2rem]">
+      <div className="lg:px-[3rem] px-[1.5rem] flex justify-between items-center lg:flex-row flex-col mt-[2rem]">
         {/* Left Content */}
-        <motion.div 
+        <motion.div
           className="flex flex-col gap-3"
           variants={leftContentVariants}
         >
-          <motion.span 
+          <motion.span
             className="border py-2 px-3 w-[200px] border-dark/50 rounded-full text-dark/50"
             variants={badgeVariants}
           >
             Welcome to Soulvalley
           </motion.span>
-          
-          <motion.h1 
-            className="font-heading font-semibold text-[4rem]"
+
+          <motion.h1
+            className="font-heading font-semibold lg:text-[4rem] text-[2.5rem]"
             variants={headingVariants}
           >
-            We Build Digital Products Businesses Actually Need.
+            Digital infrastructure for organizations that are ready to
+            grow.{" "}
           </motion.h1>
-          
-          <motion.p 
-            className="text-dark/50 w-[55%]"
+
+          <motion.p
+            className="text-dark/50 lg:w-[55%] w-[85%]"
             variants={paragraphVariants}
           >
-            From custom web apps to AI-powered tools — Soul Valley turns your
-            business idea into software that works, scales, and converts.
+            We design and build websites, portals, applications and intelligent
+            systems that help organizations operate, communicate and serve their
+            people better.
           </motion.p>
-          
+
           <motion.div
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
           >
-            <Link href="#contact" className="btn1 w-[150px] flex items-center justify-between">
+            <Link
+              href="#contact"
+              className="btn1 w-[150px] flex items-center justify-between"
+            >
               Let Talk{" "}
               <span className="-rotate-45 h-[40px] w-[40px] rounded-full text-dark flex justify-center items-center bg-white">
                 <FaArrowRight />
@@ -185,13 +190,14 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Right Content */}
-        <motion.div 
-          className="relative bg-linear-to-r from-dark/20 to-dark-ter/10 rounded-[25px] mt-[5.5rem] lg:mt-0"
-          variants={rightContentVariants}
-        >
-          {/* Floating Card */}
-          <motion.div 
-            className="absolute bg-white drop-shadow-2xl -left-10 -top-10 rounded-[15px] px-[1.5rem] py-[1.8rem] border border-[#ccc]/30"
+        <div className="w-[80%] lg:w-auto overflow-hidden  flex lg:block justify-center items-center">
+          <motion.div
+            className="relative lg:mx-0 lg:w-auto w-full bg-linear-to-r from-dark/20 to-dark-ter/10 rounded-[25px] mt-[5.5rem] lg:mt-0"
+            variants={rightContentVariants}
+          >
+            {/* Floating Card */}
+            {/** <motion.div 
+            className="absolute bg-white lg:block hidden drop-shadow-2xl lg:-left-10 lg:-top-10 bottom-50  rounded-[15px] px-[1.5rem] py-[1.8rem] border border-[#ccc]/30"
             variants={floatingCardVariants}
             animate="float"
           >
@@ -221,24 +227,25 @@ export default function HeroSection() {
                 <PiPlus size={20} />
               </motion.div>
             </div>
-          </motion.div>
+          </motion.div> */}
 
-          {/* Main Image */}
-          <motion.div variants={imageVariants}>
-            <Image src={man} alt="ceo" className="lg:block hidden" />
-            <Image src={manMobile} alt="ceo" className="lg:hidden block" />
-          </motion.div>
+            {/* Main Image */}
+            <motion.div variants={imageVariants}>
+              <Image src={man} alt="ceo" className="lg:block hidden" />
+              <Image src={manMobile} alt="ceo" className="lg:hidden block" />
+            </motion.div>
 
-          {/* Bottom Badge */}
-          <motion.div 
-            className="w-full flex justify-center"
-            variants={bottomBadgeVariants}
-          >
-            <span className="bg-black py-3 w-[450px] rounded-full flex justify-center items-center text-white drop-shadow-2xl">
-              Solutions for Brand Identity
-            </span>
+            {/* Bottom Badge */}
+            <motion.div
+              className="w-full flex justify-center"
+              variants={bottomBadgeVariants}
+            >
+              <span className="bg-black py-3 w-[450px] rounded-full flex justify-center items-center text-white drop-shadow-2xl">
+                Solutions for Brand Identity
+              </span>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );

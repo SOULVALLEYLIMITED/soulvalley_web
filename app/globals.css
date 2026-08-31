@@ -89,7 +89,6 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--color-bg);
   color: var(--color-dark);
   overflow-x: hidden;
 }

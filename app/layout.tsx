@@ -1,6 +1,6 @@
-"use client"
 import localFont  from "next/font/local";
 import "./globals.css";
+import type { Metadata } from "next";
 
 const satoshi = localFont({
   src: "../public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff",
@@ -15,6 +15,14 @@ const dmSans = localFont({
   weight: "100 900",
   display: "swap",
 });
+
+export const metadata: Metadata = {
+  title: "Soul Valley",
+  description: "Building The Solution For Today.",
+  icons: {
+    icon: "/images/avatar_logo.png",  // ✅ No "/public" prefix
+  },
+};
 
 export default function RootLayout({
   children,

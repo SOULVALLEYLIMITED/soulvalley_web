@@ -231,7 +231,7 @@ export default function ContactUs() {
   return (
     <motion.section 
       id="contact" 
-      className="section-anchor bg-surface py-20 px-12"
+      className="section-anchor bg-surface py-20 lg:px-[3rem] px-[1.5rem]"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.1 }}
@@ -250,7 +250,7 @@ export default function ContactUs() {
             </motion.span>
 
             <motion.h2
-              className="mt-5 text-5xl font-bold leading-[1.1] text-[var(--dark)]"
+              className="mt-5 lg:text-[4rem] text-[2.5rem] font-bold leading-[1.1] text-[var(--dark)]"
               style={{ fontFamily: "var(--font-heading)" }}
               variants={headingVariants}
             >
@@ -272,7 +272,7 @@ export default function ContactUs() {
             </motion.p>
 
             {/* Contact details grid */}
-            <div className="mt-10 grid grid-cols-2 gap-x-10 gap-y-8 bg-white py-[2rem] px-[1.2rem] rounded-[15px] border border-[#ccc]/15">
+            <div className="mt-10 grid lg:grid-cols-2 gap-x-10 gap-y-8 bg-white py-[2rem] px-[1.2rem] rounded-[15px] border border-[#ccc]/15">
               {contactItems.map((item, index) => (
                 <motion.div
                   key={item.label}
