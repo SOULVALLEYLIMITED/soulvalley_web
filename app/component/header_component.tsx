@@ -185,7 +185,7 @@ export default function HeaderComponent() {
             exit="hidden"
             variants={mobileMenuVariants}
           >
-            <nav className="flex flex-col px-6 pb-6 gap-1 bg-white border-t border-[var(--color-border)]">
+            <nav className="flex flex-col px-6 py-6 gap-5 bg-white border-t border-[var(--color-border)]">
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.href}

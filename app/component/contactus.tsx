@@ -221,7 +221,7 @@ export default function ContactUs() {
       console.error('Contact submission error:', error);
       setSubmitStatus({
         type: 'error',
-        message: 'Failed to send message. Please try again or email us directly at seanimayi@gmail.com'
+        message: 'Failed to send message. Please try again or email us directly at seanimayi@soulvalley.tech'
       });
     } finally {
       setIsSubmitting(false);
@@ -414,8 +414,8 @@ export default function ContactUs() {
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-dark text-white py-3 rounded-[10px] text-sm font-semibold uppercase tracking-widest transition-colors ${
-                  isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[var(--dark-sec)]'
+                className={`w-full bg-dark text-white hover:bg-white py-3 rounded-[10px] hover:text-dark text-sm font-semibold uppercase tracking-widest transition-colors ${
+                  isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[var(--dark-sec)] '
                 }`}
                 style={{ fontFamily: "var(--font-body)" }}
                 variants={buttonVariants}

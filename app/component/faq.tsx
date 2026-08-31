@@ -124,7 +124,7 @@ export default function FAQ() {
         {faqs.map((faq, i) => (
           <div
             key={i}
-            className={`${i == 12 ? "col-span-2" : "col-span-1"} bg-[var(--color-bg)] px-8 py-8 hover:bg-[var(--color-surface)] transition-colors duration-200`}
+            className={`${i == 12 ? "lg:col-span-2" : "lg:col-span-1"} h-auto bg-[var(--color-bg)] px-8 py-8 hover:bg-[var(--color-surface)] transition-colors duration-200`}
           >
             <div className="flex items-start gap-5">
               {/* Number */}
