@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  ...(process.env.NODE_ENV === "production" && {
+    compiler: {
+      removeConsole: true,
+    },
+  }),
 };
 
 export default nextConfig;
