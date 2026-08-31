@@ -78,11 +78,6 @@ const faqs = [
       "Launch is not necessarily the end of the relationship. We can continue monitoring, maintaining, improving, and expanding the solution based on real-world feedback and changing organizational needs.",
   },
 
-  {
-    question: "What does 'Building the Walls of Jerusalem' mean?",
-    answer:
-      "It represents our philosophy of building what is needed, restoring what is broken, creating strong foundations, and working toward meaningful progress. For Soul Valley, technology is the tool — solving the problem is the mission.",
-  },
 ];
 
 export default function FAQ() {
