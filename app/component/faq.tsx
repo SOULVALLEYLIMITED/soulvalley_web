@@ -1,4 +1,4 @@
-"use client"
+"use client";
 const faqs = [
   {
     question: "What does Soul Valley do?",
@@ -19,7 +19,8 @@ const faqs = [
   },
 
   {
-    question: "What if I know the solution I want but I'm not sure it's the right one?",
+    question:
+      "What if I know the solution I want but I'm not sure it's the right one?",
     answer:
       "That's completely fine. You don't need to arrive with a technical specification. If you can explain the problem you're experiencing or the outcome you want, we can help investigate the situation and determine what should be built.",
   },
@@ -77,13 +78,14 @@ const faqs = [
     answer:
       "Launch is not necessarily the end of the relationship. We can continue monitoring, maintaining, improving, and expanding the solution based on real-world feedback and changing organizational needs.",
   },
-
 ];
 
 export default function FAQ() {
   return (
-    <section id="faq" className="section-anchor bg-[var(--color-bg)] px-6 lg:px-[3rem] py-20">
-
+    <section
+      id="faq"
+      className="section-anchor bg-[var(--color-bg)] px-6 lg:px-[3rem] py-20"
+    >
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16">
         <div>
@@ -106,8 +108,8 @@ export default function FAQ() {
           className="text-dark/50 text-base leading-relaxed lg:w-[38%]"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Everything you need to know before working with us.
-          Can't find what you're looking for?{" "}
+          Everything you need to know before working with us. Can't find what
+          you're looking for?{" "}
           <a
             href="#contact"
             className="text-dark underline underline-offset-4 hover:text-dark/60 transition-colors"
@@ -122,10 +124,9 @@ export default function FAQ() {
         {faqs.map((faq, i) => (
           <div
             key={i}
-            className="bg-[var(--color-bg)] px-8 py-8 hover:bg-[var(--color-surface)] transition-colors duration-200"
+            className={`${i == 12 ? "col-span-2" : "col-span-1"} bg-[var(--color-bg)] px-8 py-8 hover:bg-[var(--color-surface)] transition-colors duration-200`}
           >
             <div className="flex items-start gap-5">
-
               {/* Number */}
               <span
                 className="text-xs font-semibold text-dark/30 mt-1 flex-shrink-0"
@@ -148,7 +149,6 @@ export default function FAQ() {
                   {faq.answer}
                 </p>
               </div>
-
             </div>
           </div>
         ))}
@@ -162,14 +162,10 @@ export default function FAQ() {
         >
           Still have questions?
         </p>
-        <a
-          href="#contact"
-          className="btn1 px-8 py-3"
-        >
+        <a href="#contact" className="btn1 px-8 py-3">
           Talk to us
         </a>
       </div>
-
     </section>
-  )
+  );
 }
