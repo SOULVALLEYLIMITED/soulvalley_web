@@ -1,36 +1,89 @@
 "use client"
 const faqs = [
   {
-    question: "What services does Soulvalley offer?",
+    question: "What does Soul Valley do?",
     answer:
-      "We build custom web applications, mobile apps, AI-powered tools, e-commerce platforms, EdTech solutions, and business dashboards. Everything is built from scratch — no templates, no shortcuts.",
+      "We identify important problems and engineer technology solutions to solve them. This can involve custom software, AI, automation, data systems, mobile applications, web platforms, or connected technologies. We choose the technology based on the problem — not the other way around.",
   },
+
   {
-    question: "How long does a typical project take?",
+    question: "Do you only build websites and mobile apps?",
     answer:
-      "It depends on the scope. A standard business website takes 2–3 weeks. A full custom web application or mobile app typically takes 6–12 weeks. We give you a clear timeline before we start.",
+      "No. Websites and mobile applications are only some of the tools we use. Depending on the problem, a solution may involve AI agents, automation, data systems, APIs, cloud infrastructure, IoT, computer vision, or other emerging technologies.",
   },
+
   {
-    question: "Do you work with startups or only established businesses?",
+    question: "How do you approach a new project?",
     answer:
-      "Both. We work with early-stage founders who have an idea and need a technical partner, and with established businesses that need to upgrade or expand their digital infrastructure.",
+      "We start with the problem, not the technology. We learn how the organization currently operates, identify the underlying challenge, understand the desired outcome, and then design the most appropriate solution. Once the solution is defined, we engineer, deploy, measure, and improve it.",
   },
+
   {
-    question: "What does your development process look like?",
+    question: "What if I know the solution I want but I'm not sure it's the right one?",
     answer:
-      "We follow four stages — Define, Design, Build, and Launch. You're involved at every step. No radio silence, no surprises. Weekly updates are standard on every project.",
+      "That's completely fine. You don't need to arrive with a technical specification. If you can explain the problem you're experiencing or the outcome you want, we can help investigate the situation and determine what should be built.",
   },
+
   {
-    question: "Do you offer ongoing support after launch?",
+    question: "Who does Soul Valley work with?",
     answer:
-      "Yes. We offer monthly maintenance and growth retainers starting from ₦50,000/month. This covers hosting, security, updates, and priority support so your product keeps running smoothly.",
+      "We work with organizations, businesses, startups, and teams that have meaningful problems that technology can help solve. We are particularly interested in challenges where better systems, automation, intelligence, or digital infrastructure can create measurable improvement.",
   },
+
   {
-    question: "Can you integrate AI into my existing product?",
+    question: "What does your solution-engineering process look like?",
     answer:
-      "Absolutely. We specialize in adding AI capabilities to existing platforms — chatbots, automation, smart dashboards, recommendation engines, and more. Book a call and we'll assess what's possible.",
+      "Our process is built around seven stages: Discover, Investigate, Architect, Engineer, Deploy, Measure, and Evolve. We first understand the problem, then design and build the solution, introduce it into the real environment, measure its impact, and continue improving it.",
   },
-]
+
+  {
+    question: "Can Soul Valley improve an existing system?",
+    answer:
+      "Yes. We can work with existing software, workflows, and digital infrastructure. Sometimes the best solution is not to build something completely new, but to improve, connect, automate, or modernize what already exists.",
+  },
+
+  {
+    question: "Can you integrate AI into an existing product or organization?",
+    answer:
+      "Yes. AI can be integrated where it provides real value. Depending on the problem, this could include AI agents, intelligent search, document processing, recommendations, automation, computer vision, voice interfaces, or decision-support systems. We focus on useful applications rather than adding AI simply for the sake of using it.",
+  },
+
+  {
+    question: "Do humans remain involved in AI-powered solutions?",
+    answer:
+      "Yes. We use automation where it improves efficiency while preserving human judgment where context, responsibility, creativity, or important decisions matter. The goal is not to replace people unnecessarily, but to help them work more effectively.",
+  },
+
+  {
+    question: "How do you determine what technology a project needs?",
+    answer:
+      "We don't begin with a predetermined technology stack. We evaluate the problem, requirements, environment, users, constraints, security needs, and desired outcomes before deciding what technologies are appropriate.",
+  },
+
+  {
+    question: "How long does a solution take to build?",
+    answer:
+      "Every solution is different. The timeline depends on the complexity of the problem, the scope of the system, integrations, testing, and deployment requirements. After understanding the problem, we define the scope and establish a realistic development plan.",
+  },
+
+  {
+    question: "What happens if the project changes during development?",
+    answer:
+      "We understand that requirements can evolve as a solution takes shape. Significant changes are discussed with the client before implementation so that their impact on scope, timeline, and resources is clear. This keeps the project transparent for everyone involved.",
+  },
+
+  {
+    question: "What happens after the solution is launched?",
+    answer:
+      "Launch is not necessarily the end of the relationship. We can continue monitoring, maintaining, improving, and expanding the solution based on real-world feedback and changing organizational needs.",
+  },
+
+  {
+    question: "What does 'Building the Walls of Jerusalem' mean?",
+    answer:
+      "It represents our philosophy of building what is needed, restoring what is broken, creating strong foundations, and working toward meaningful progress. For Soul Valley, technology is the tool — solving the problem is the mission.",
+  },
+];
 
 export default function FAQ() {
   return (
