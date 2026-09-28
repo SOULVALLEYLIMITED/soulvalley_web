@@ -134,8 +134,8 @@ export default function HeaderComponent() {
 
         {/* Desktop CTA */}
         <motion.div variants={ctaVariants}>
-          <Link href="#contact" className="btn1 hidden lg:inline-flex">
-            Contact Us
+          <Link href="/discovery" className="btn1 hidden lg:inline-flex">
+            Let Us Work Together
           </Link>
         </motion.div>
 
@@ -216,7 +216,7 @@ export default function HeaderComponent() {
                   onClick={() => setOpen(false)}
                   className="btn1 mt-10 text-center"
                 >
-                  Contact Us
+                  Let Us Work Together
                 </Link>
               </motion.div>
             </nav>

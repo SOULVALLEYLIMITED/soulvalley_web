@@ -12,19 +12,33 @@ import {
   FiRefreshCw,
   FiInbox,
   FiLock,
+  FiX,
+  FiInfo,
+  FiClock,
+  FiUsers,
+  FiImage,
+  FiPlus,
 } from "react-icons/fi";
 import {
   ApiRequestError,
   Contact,
+  CommunityUpdate,
   clearToken,
+  createCommunityUpdate,
+  deleteCommunityUpdate,
   deleteContact,
+  fetchCommunityUpdates,
   fetchContacts,
   getToken,
   gmailComposeUrl,
   login,
   setToken,
   updateContactStatus,
+  uploadCommunityImage,
+  TERMS_AND_CONDITIONS,
 } from "../lib/api";
+
+type View = "contacts" | "community";
 
 type Tab = "all" | "new" | "read" | "replied";
 type Theme = "light" | "dark";
@@ -54,6 +68,7 @@ export default function DashboardPage() {
   const [theme, setTheme] = useState<Theme>("light");
   const [authed, setAuthed] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [view, setView] = useState<View>("contacts");
 
   // login form
   const [password, setPassword] = useState("");
@@ -67,6 +82,25 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [search, setSearch] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+
+  // ✅ Modal states
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
+  const [deleteCountdown, setDeleteCountdown] = useState(5);
+  const [deleteTimer, setDeleteTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+
+  // ✅ Check if user has accepted terms
+  useEffect(() => {
+    const accepted = window.localStorage.getItem("sv_terms_accepted");
+    if (accepted === "true") {
+      setHasAcceptedTerms(true);
+    } else {
+      setShowTermsModal(true);
+    }
+  }, []);
 
   /* ---------------- theme ---------------- */
   useEffect(() => {
@@ -91,17 +125,19 @@ export default function DashboardPage() {
     setError("");
     try {
       const data = await fetchContacts();
-      setContacts(data);
+      setContacts(Array.isArray(data) ? data : []);
     } catch (e) {
       if (e instanceof ApiRequestError && e.status === 401) {
         clearToken();
         setAuthed(false);
+        setContacts([]);
       } else {
         setError(
           e instanceof Error
             ? e.message
             : "Could not load messages. Is the API running?",
         );
+        setContacts([]);
       }
     } finally {
       setLoading(false);
@@ -149,20 +185,95 @@ export default function DashboardPage() {
     setSearch("");
   };
 
+  /* ---------------- Delete Modal ---------------- */
+  const handleDeleteClick = (c: Contact) => {
+    setDeleteTarget(c);
+    setDeleteCountdown(5);
+    setShowDeleteModal(true);
+  };
+
+  const startDeleteCountdown = () => {
+    if (deleteTimer) clearInterval(deleteTimer);
+    
+    const timer = setInterval(() => {
+      setDeleteCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          // Auto-delete when countdown reaches 0
+          performDelete();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    setDeleteTimer(timer);
+  };
+
+  useEffect(() => {
+    if (showDeleteModal) {
+      startDeleteCountdown();
+    }
+    return () => {
+      if (deleteTimer) clearInterval(deleteTimer);
+    };
+  }, [showDeleteModal]);
+
+  const performDelete = async () => {
+    if (!deleteTarget) return;
+    
+    const c = deleteTarget;
+    setBusyId(c.id);
+    const snapshot = contacts;
+    setContacts((prev) => prev.filter((x) => x.id !== c.id));
+    
+    try {
+      await deleteContact(c.id);
+      setShowDeleteModal(false);
+      setDeleteTarget(null);
+    } catch {
+      setContacts(snapshot);
+      setError("Could not delete the message.");
+    } finally {
+      setBusyId(null);
+      if (deleteTimer) clearInterval(deleteTimer);
+      setDeleteCountdown(5);
+    }
+  };
+
+  const cancelDelete = () => {
+    if (deleteTimer) clearInterval(deleteTimer);
+    setShowDeleteModal(false);
+    setDeleteTarget(null);
+    setDeleteCountdown(5);
+  };
+
+  /* ---------------- Terms Modal ---------------- */
+  const acceptTerms = () => {
+    window.localStorage.setItem("sv_terms_accepted", "true");
+    setHasAcceptedTerms(true);
+    setShowTermsModal(false);
+  };
+
+  const declineTerms = () => {
+    window.localStorage.setItem("sv_terms_accepted", "false");
+    setShowTermsModal(false);
+    // Optional: redirect or logout
+    handleLogout();
+  };
+
   /* ---------------- row actions ---------------- */
   const patchStatus = async (
     c: Contact,
     status: "new" | "read" | "replied",
   ) => {
     setBusyId(c.id);
-    // optimistic update
     setContacts((prev) =>
       prev.map((x) => (x.id === c.id ? { ...x, status } : x)),
     );
     try {
       await updateContactStatus(c.id, status);
     } catch {
-      // revert on failure
       setContacts((prev) =>
         prev.map((x) => (x.id === c.id ? { ...x, status: c.status } : x)),
       );
@@ -180,29 +291,12 @@ export default function DashboardPage() {
   const handleToggleRead = (c: Contact) =>
     patchStatus(c, c.status === "new" ? "read" : "new");
 
-  const handleDelete = async (c: Contact) => {
-    if (
-      !window.confirm(
-        `Delete the message from ${c.name}? This cannot be undone.`,
-      )
-    )
-      return;
-    setBusyId(c.id);
-    const snapshot = contacts;
-    setContacts((prev) => prev.filter((x) => x.id !== c.id));
-    try {
-      await deleteContact(c.id);
-    } catch {
-      setContacts(snapshot);
-      setError("Could not delete the message.");
-    } finally {
-      setBusyId(null);
-    }
-  };
-
   /* ---------------- derived ---------------- */
   const counts = useMemo(() => {
-    const c = { all: contacts.length, new: 0, read: 0, replied: 0 };
+    const c = { all: 0, new: 0, read: 0, replied: 0 };
+    if (!Array.isArray(contacts)) return c;
+    
+    c.all = contacts.length;
     for (const x of contacts) {
       if (x.status === "new") c.new++;
       else if (x.status === "read") c.read++;
@@ -213,6 +307,8 @@ export default function DashboardPage() {
 
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase();
+    if (!Array.isArray(contacts)) return [];
+    
     return contacts.filter((c) => {
       if (activeTab !== "all" && c.status !== activeTab) return false;
       if (!q) return true;
@@ -227,7 +323,108 @@ export default function DashboardPage() {
 
   /* ---------------- render ---------------- */
   return (
-    <div className={theme === "dark" ? "dark" : ""}>
+    <div
+      className={`text-slate-900 dark:text-slate-100 ${theme === "dark" ? "dark" : ""}`}
+    >
+      {/* ✅ Terms & Conditions Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 dark:bg-slate-900 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <FiInfo className="text-blue-500" />
+                Terms & Conditions
+              </h2>
+            </div>
+            
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <div className="whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300">
+                {TERMS_AND_CONDITIONS.content}
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3 justify-end border-t border-slate-200 dark:border-slate-700 pt-4">
+              <button
+                onClick={declineTerms}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              >
+                Decline
+              </button>
+              <button
+                onClick={acceptTerms}
+                className="px-6 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+              >
+                Accept & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ Delete Confirmation Modal */}
+      {showDeleteModal && deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 dark:bg-slate-900 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-full dark:bg-red-900/30">
+                  <FiTrash2 className="text-red-600 dark:text-red-400" size={20} />
+                </div>
+                <h2 className="text-lg font-bold">Delete Message?</h2>
+              </div>
+              <button
+                onClick={cancelDelete}
+                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Are you sure you want to delete the message from{" "}
+              <span className="font-medium text-slate-900 dark:text-white">
+                {deleteTarget.name}
+              </span>
+              ? This action cannot be undone.
+            </p>
+
+            <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="flex items-center gap-2 text-sm">
+                <FiClock className="text-slate-400" />
+                <span className="text-slate-600 dark:text-slate-300">
+                  Auto-deleting in{" "}
+                  <span className="font-bold text-red-600 dark:text-red-400">
+                    {deleteCountdown}
+                  </span>{" "}
+                  seconds...
+                </span>
+              </div>
+              <div className="mt-2 w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-red-500 transition-all duration-1000 ease-linear"
+                  style={{ width: `${(deleteCountdown / 5) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3 justify-end">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={performDelete}
+                className="px-6 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+              >
+                Delete Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors">
         {/* Top bar */}
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
@@ -267,6 +464,35 @@ export default function DashboardPage() {
           </div>
         </header>
 
+        {authed && (
+          <div className="px-4 pt-4 sm:px-6">
+            <div className="flex w-fit gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900">
+              <button
+                onClick={() => setView("contacts")}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                  view === "contacts"
+                    ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                <FiInbox size={15} className="mr-1.5 inline" />
+                Contacts
+              </button>
+              <button
+                onClick={() => setView("community")}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                  view === "community"
+                    ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                <FiUsers size={15} className="mr-1.5 inline" />
+                Community
+              </button>
+            </div>
+          </div>
+        )}
+
         <main className=" px-4 py-6 sm:px-6">
           {checkingAuth ? null : !authed ? (
             /* -------- Login -------- */
@@ -303,6 +529,8 @@ export default function DashboardPage() {
                 </form>
               </div>
             </div>
+          ) : view === "community" ? (
+            <CommunityPanel />
           ) : (
             /* -------- Inbox -------- */
             <>
@@ -392,7 +620,7 @@ export default function DashboardPage() {
                         busy={busyId === c.id}
                         onReply={() => handleReply(c)}
                         onToggleRead={() => handleToggleRead(c)}
-                        onDelete={() => handleDelete(c)}
+                        onDelete={() => handleDeleteClick(c)}
                       />
                     ))}
                   </div>
@@ -401,6 +629,209 @@ export default function DashboardPage() {
             </>
           )}
         </main>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- community panel ---------------- */
+function CommunityPanel() {
+  const [updates, setUpdates] = useState<CommunityUpdate[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      setUpdates(await fetchCommunityUpdates());
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not load community updates.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadCommunityImage(file);
+      setImageUrl(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Image upload failed.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !body.trim()) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      const created = await createCommunityUpdate({
+        title: title.trim(),
+        body: body.trim(),
+        imageUrl: imageUrl || undefined,
+      });
+      setUpdates((prev) => [created, ...prev]);
+      setTitle("");
+      setBody("");
+      setImageUrl("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not post the update.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Delete this update? This cannot be undone.")) return;
+    setBusyId(id);
+    const snapshot = updates;
+    setUpdates((prev) => prev.filter((u) => u.id !== id));
+    try {
+      await deleteCommunityUpdate(id);
+    } catch {
+      setUpdates(snapshot);
+      setError("Could not delete the update.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
+      {/* New update form */}
+      <div className="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <h2 className="flex items-center gap-2 text-sm font-semibold">
+          <FiPlus size={16} />
+          New community update
+        </h2>
+        <form onSubmit={handleSubmit} className="mt-4 space-y-3">
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Title"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:focus:border-slate-100"
+          />
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="What's the update?"
+            rows={5}
+            className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:focus:border-slate-100"
+          />
+
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+              id="community-image-input"
+            />
+            <label
+              htmlFor="community-image-input"
+              className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm text-slate-600 transition hover:border-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-100"
+            >
+              <FiImage size={15} />
+              {uploading ? "Uploading…" : imageUrl ? "Image attached — change" : "Attach an image (optional)"}
+            </label>
+            {imageUrl && !uploading && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={imageUrl}
+                alt="Preview"
+                className="mt-2 h-28 w-full rounded-lg object-cover"
+              />
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting || uploading || !title.trim() || !body.trim()}
+            className="w-full rounded-lg bg-slate-900 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+          >
+            {submitting ? "Posting…" : "Post update"}
+          </button>
+        </form>
+      </div>
+
+      {/* List */}
+      <div>
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+            {error}
+          </div>
+        )}
+
+        {loading && updates.length === 0 ? (
+          <div className="py-20 text-center text-sm text-slate-500 dark:text-slate-400">
+            Loading updates…
+          </div>
+        ) : updates.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 py-20 text-center dark:border-slate-700">
+            <FiUsers className="mx-auto text-slate-300 dark:text-slate-600" size={40} />
+            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+              No community updates yet. Post one to show up on the public community page.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {updates.map((u) => (
+              <div
+                key={u.id}
+                className={`rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-5 ${
+                  busyId === u.id ? "opacity-60" : ""
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="font-semibold">{u.title}</h3>
+                    <time className="text-xs text-slate-400">{formatDate(u.createdAt)}</time>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(u.id)}
+                    disabled={busyId === u.id}
+                    className="flex shrink-0 items-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950"
+                  >
+                    <FiTrash2 size={15} />
+                  </button>
+                </div>
+                {u.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={u.imageUrl}
+                    alt={u.title}
+                    className="mt-3 h-40 w-full rounded-lg object-cover"
+                  />
+                )}
+                <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300">
+                  {u.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -463,6 +894,11 @@ function ContactCard({
           <div className="flex items-center gap-2">
             <h3 className="truncate font-semibold">{c.name}</h3>
             <StatusBadge status={c.status} />
+            {c.source === "ai_chat" && (
+              <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                🤖 AI
+              </span>
+            )}
           </div>
           <a
             href={`mailto:${c.email}`}
