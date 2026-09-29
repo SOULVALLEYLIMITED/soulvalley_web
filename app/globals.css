@@ -8,7 +8,7 @@
 /* ── LOCAL FONTS ── */
 @font-face {
   font-family: "Satoshi";
-  src: url("/public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff")
+  src: url("/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff")
     format("woff");
   font-weight: 100 900;
   font-style: normal;
@@ -17,7 +17,7 @@
 
 @font-face {
   font-family: "DM Sans";
-  src: url("/public/fonts/DMSans-VariableFont_opsz\,wght.ttf") format("ttf");
+  src: url("/fonts/DMSans-VariableFont_opsz\,wght.ttf") format("ttf");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
