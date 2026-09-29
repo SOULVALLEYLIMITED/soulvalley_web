@@ -37,6 +37,8 @@ import {
   uploadCommunityImage,
   TERMS_AND_CONDITIONS,
 } from "../lib/api";
+import { isHtmlEmpty, sanitizeHtml } from "../lib/html";
+import RichTextEditor from "../component/RichTextEditor";
 
 type View = "contacts" | "community";
 
@@ -681,7 +683,7 @@ function CommunityPanel() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !body.trim()) return;
+    if (!title.trim() || isHtmlEmpty(body)) return;
     setSubmitting(true);
     setError("");
     try {
@@ -732,12 +734,10 @@ function CommunityPanel() {
             placeholder="Title"
             className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:focus:border-slate-100"
           />
-          <textarea
+          <RichTextEditor
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={setBody}
             placeholder="What's the update?"
-            rows={5}
-            className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:focus:border-slate-100"
           />
 
           <div>
@@ -768,7 +768,7 @@ function CommunityPanel() {
 
           <button
             type="submit"
-            disabled={submitting || uploading || !title.trim() || !body.trim()}
+            disabled={submitting || uploading || !title.trim() || isHtmlEmpty(body)}
             className="w-full rounded-lg bg-slate-900 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
           >
             {submitting ? "Posting…" : "Post update"}
@@ -825,9 +825,10 @@ function CommunityPanel() {
                     className="mt-3 h-40 w-full rounded-lg object-cover"
                   />
                 )}
-                <p className="mt-2 whitespace-pre-wrap break-words wrap-anywhere text-sm text-slate-600 dark:text-slate-300">
-                  {u.body}
-                </p>
+                <div
+                  className="rich-content mt-2 break-words wrap-anywhere text-sm text-slate-600 dark:text-slate-300"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(u.body) }}
+                />
               </div>
             ))}
           </div>

@@ -134,8 +134,17 @@ export default function HeaderComponent() {
         </nav>
 
         {/* Desktop CTA */}
-        <motion.div variants={ctaVariants}>
-          <Link href="/discovery" className="btn1 hidden lg:inline-flex">
+        <motion.div
+          className="hidden lg:flex items-center gap-6"
+          variants={ctaVariants}
+        >
+          <Link
+            href="#contact"
+            className="nav_link"
+          >
+            Contact Us
+          </Link>
+          <Link href="/discovery" className="btn1 inline-flex">
             Let Us Work Together
           </Link>
         </motion.div>

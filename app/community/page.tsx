@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import logo from "@/public/images/soul_valley_logo.png";
 import { CommunityUpdate, fetchCommunityUpdates } from "../lib/api";
+import { sanitizeHtml, stripHtml } from "../lib/html";
 
 const PAGE_SIZE = 6;
 
@@ -21,13 +22,13 @@ function formatDate(iso: string): string {
 }
 
 function readTime(body: string): string {
-  const words = body.trim().split(/\s+/).filter(Boolean).length;
+  const words = stripHtml(body).trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(1, Math.round(words / 200));
   return `${minutes} min read`;
 }
 
 function excerpt(body: string, max = 140): string {
-  const clean = body.trim().replace(/\s+/g, " ");
+  const clean = stripHtml(body).trim().replace(/\s+/g, " ");
   return clean.length > max ? clean.slice(0, max).trimEnd() + "…" : clean;
 }
 
@@ -36,6 +37,7 @@ export default function CommunityPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     fetchCommunityUpdates()
@@ -46,14 +48,30 @@ export default function CommunityPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const featured = updates[0];
-  const sidebarItems = updates.slice(1, 5);
-  const gridItems = updates.slice(5);
+  const featured = updates[activeIndex];
+  // Everything except whichever post is currently featured, in original
+  // (newest-first) order — clicking one of these swaps it into the
+  // featured spot instead of removing it from the list.
+  const others = useMemo(
+    () =>
+      updates
+        .map((u, i) => ({ u, i }))
+        .filter(({ i }) => i !== activeIndex),
+    [updates, activeIndex]
+  );
+  const sidebarItems = others.slice(0, 4);
+  const gridItems = others.slice(4);
   const pageCount = Math.max(1, Math.ceil(gridItems.length / PAGE_SIZE));
   const pagedItems = useMemo(
     () => gridItems.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE),
     [gridItems, page]
   );
+
+  const selectUpdate = (index: number) => {
+    setActiveIndex(index);
+    setPage(0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="bg-[var(--color-bg)] min-h-screen">
@@ -142,12 +160,11 @@ export default function CommunityPage() {
                   >
                     {featured.title}
                   </h3>
-                  <p
-                    className="mt-3 text-[var(--mid)] leading-relaxed"
+                  <div
+                    className="rich-content mt-3 text-[var(--mid)] leading-relaxed"
                     style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    {excerpt(featured.body, 260)}
-                  </p>
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(featured.body) }}
+                  />
                 </div>
               </div>
 
@@ -160,8 +177,12 @@ export default function CommunityPage() {
                     More from the team
                   </h2>
                   <div className="flex flex-col gap-5">
-                    {sidebarItems.map((u) => (
-                      <div key={u.id} className="flex gap-4">
+                    {sidebarItems.map(({ u, i }) => (
+                      <button
+                        key={u.id}
+                        onClick={() => selectUpdate(i)}
+                        className="flex gap-4 text-left transition hover:opacity-70"
+                      >
                         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[12px] bg-[var(--color-surface)]">
                           {u.imageUrl && (
                             <Image
@@ -187,7 +208,7 @@ export default function CommunityPage() {
                             {formatDate(u.createdAt)} · {readTime(u.body)}
                           </p>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -227,10 +248,11 @@ export default function CommunityPage() {
                 </div>
 
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                  {pagedItems.map((u) => (
+                  {pagedItems.map(({ u, i }) => (
                     <article
                       key={u.id}
-                      className="rounded-[20px] border border-[var(--color-border)] bg-[var(--color-card)] overflow-hidden flex flex-col"
+                      onClick={() => selectUpdate(i)}
+                      className="cursor-pointer rounded-[20px] border border-[var(--color-border)] bg-[var(--color-card)] overflow-hidden flex flex-col text-left transition hover:opacity-80"
                     >
                       {u.imageUrl && (
                         <div className="relative h-48 w-full">
