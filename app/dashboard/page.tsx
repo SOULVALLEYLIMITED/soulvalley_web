@@ -825,7 +825,7 @@ function CommunityPanel() {
                     className="mt-3 h-40 w-full rounded-lg object-cover"
                   />
                 )}
-                <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300">
+                <p className="mt-2 whitespace-pre-wrap break-words wrap-anywhere text-sm text-slate-600 dark:text-slate-300">
                   {u.body}
                 </p>
               </div>
@@ -912,10 +912,10 @@ function ContactCard({
         </time>
       </div>
 
-      <p className="mt-3 text-sm font-medium">{c.subject}</p>
+      <p className="mt-3 text-sm font-medium break-words wrap-anywhere">{c.subject}</p>
       <p
         ref={messageRef}
-        className={`mt-1 whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300 ${
+        className={`mt-1 whitespace-pre-wrap break-words wrap-anywhere text-sm text-slate-600 dark:text-slate-300 ${
           expanded ? "" : "line-clamp-4"
         }`}
       >

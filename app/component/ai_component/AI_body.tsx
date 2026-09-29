@@ -519,7 +519,7 @@ export default function AIBody({ onChatStart }: AIBodyProps) {
     if (isUser) {
       return (
         <div key={index} className="flex justify-end">
-          <div className="max-w-[85%] sm:max-w-[75%] md:max-w-[70%] lg:max-w-[65%] rounded-[15px] p-3 text-sm sm:text-base break-words whitespace-pre-wrap overflow-wrap-anywhere bg-[#f1f5f9] text-[#0f172a]">
+          <div className="min-w-0 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] lg:max-w-[65%] rounded-[15px] p-3 text-sm sm:text-base break-words wrap-anywhere whitespace-pre-wrap bg-[#f1f5f9] text-[#0f172a]">
             {displayContent}
           </div>
         </div>
@@ -528,7 +528,7 @@ export default function AIBody({ onChatStart }: AIBodyProps) {
 
     return (
       <div key={index} className="flex justify-start">
-        <div className="max-w-[85%] sm:max-w-[75%] md:max-w-[70%] lg:max-w-[65%] rounded-[15px] p-3 text-sm sm:text-base break-words whitespace-pre-wrap overflow-wrap-anywhere bg-gradient-to-r from-[#eaa600] via-[#dcac00] to-[#a5c200] text-white">
+        <div className="min-w-0 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] lg:max-w-[65%] rounded-[15px] p-3 text-sm sm:text-base break-words wrap-anywhere whitespace-pre-wrap bg-gradient-to-r from-[#eaa600] via-[#dcac00] to-[#a5c200] text-white">
           <div
             dangerouslySetInnerHTML={{
               __html: markdownToHtml(displayContent || ""),
