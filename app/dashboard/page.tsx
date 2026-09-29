@@ -380,7 +380,7 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 dark:text-slate-300 break-words wrap-anywhere">
               Are you sure you want to delete the message from{" "}
               <span className="font-medium text-slate-900 dark:text-white">
                 {deleteTarget.name}

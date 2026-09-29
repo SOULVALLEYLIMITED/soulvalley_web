@@ -11,6 +11,7 @@ const navLinks = [
   { href: "#features", label: "Features" },
   { href: "#portfolio", label: "Portfolio" },
   { href: "#testimonials", label: "Testimonials" },
+  { href: "/community", label: "Community" },
 ];
 
 // Animation variants

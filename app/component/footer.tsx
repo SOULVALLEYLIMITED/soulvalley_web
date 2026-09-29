@@ -111,6 +111,7 @@ const linkHrefs: { [key: string]: string } = {
   Features: "#features",
   Portfolio: "#portfolio",
   Testimonials: "#testimonials",
+  Community: "/community",
   "Web Applications": "#portfolio",
   "Mobile Apps": "#portfolio",
   "AI Integration": "#portfolio",
@@ -121,7 +122,7 @@ const linkHrefs: { [key: string]: string } = {
 };
 
 const links = {
-  Company: ["About", "Features", "Portfolio", "Testimonials"],
+  Company: ["About", "Features", "Portfolio", "Testimonials", "Community"],
   Porfolio: ["Web Applications", "Mobile Apps", "AI Integration", "E-Commerce"],
   Support: ["Contact Us", "Privacy Policy", "FAQ"],
 };
