@@ -159,17 +159,16 @@ export default function HeroSection() {
             className="font-heading font-semibold lg:text-[4rem] text-[2.5rem]"
             variants={headingVariants}
           >
-            Digital infrastructure for organizations that are ready to
-            grow.{" "}
+            We don't just build software. We build world-striking solutions for
+            your infrastructure.
           </motion.h1>
 
           <motion.p
             className="text-dark/50 lg:w-[55%] w-[85%]"
             variants={paragraphVariants}
           >
-            We design and build websites, portals, applications and intelligent
-            systems that help organizations operate, communicate and serve their
-            people better.
+            To empower organizations with digital solutions that transform how
+            they operate, communicate and serve their people.
           </motion.p>
 
           <motion.div
